@@ -1,16 +1,13 @@
 'use strict';
 const { MongoClient } = require('mongodb');
 
-let _db = null;
+let db;
 
 async function getDb() {
-  if (!_db) {
-    const client = new MongoClient(process.env.MONGODB_URI);
-    await client.connect();
-    _db = client.db('udise_db');
-    console.log('MongoDB connected');
-  }
-  return _db;
+  if (db) return db;
+  const client = await MongoClient.connect(process.env.MONGODB_URI);
+  db = client.db(process.env.DB_NAME);
+  return db;
 }
 
 module.exports = getDb;

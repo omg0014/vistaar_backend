@@ -1,6 +1,9 @@
 'use strict';
 
-module.exports = function errorHandler(err, _req, res, _next) {
-  console.error(err.message);
-  res.status(500).json({ error: err.message });
-};
+function errorHandler(err,req,res,next){
+    console.log(err);
+    res.status(500).json({error:err.message||"Internal Server Error"});
+}
+
+module.exports=errorHandler
+
