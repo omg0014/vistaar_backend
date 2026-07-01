@@ -152,5 +152,21 @@ async function removeLead(req, res, next) {
 
 
 
-module.exports = { searchSchools, getSchoolById, patchLead, getLeads, removeLead };
+async function getSuggestions(req, res, next) {
+  try {
+    const q = req.query.q || '';
+    if (q.trim().length < 2) return res.json([]);
+    const db = await getDb();
+    const results = await db.collection(process.env.COLLECTION_NAME)
+      .find({ schoolName: { $regex: q.trim(), $options: 'i' } })
+      .project({ schoolName: 1 })
+      .limit(20)
+      .toArray();
+    res.json(results);
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = { searchSchools, getSchoolById, patchLead, getLeads, removeLead, getSuggestions };
 
