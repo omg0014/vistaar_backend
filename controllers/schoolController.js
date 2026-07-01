@@ -74,7 +74,6 @@ async function searchSchools(req, res, next) {
     const results = await db
       .collection(process.env.COLLECTION_NAME)
       .find(filter)
-      .limit(500)
       .toArray();
 
     res.json({ total: results.length, results });
@@ -144,6 +143,13 @@ async function removeLead(req, res, next) {
     next(err);
   }
 }
+
+// async function cnt(req, res, next) {
+//   const db = await getDb();
+//   const count = await db.collection(process.env.COLLECTION_NAME).countDocuments();
+//   res.json({ count });
+// }
+
 
 
 module.exports = { searchSchools, getSchoolById, patchLead, getLeads, removeLead };
