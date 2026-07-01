@@ -5,9 +5,7 @@ const { searchSchools, getSchoolById, patchLead, getLeads, removeLead } = requir
 
 const router = Router();
 
-router.get('/leads',       getLeads);
-router.patch('/:id/lead',  patchLead);
-
+// router.get('/cnt', cnt);
 router.post('/search', searchSchools);
 router.get('/search', searchSchools);
 router.get('/school/:id', getSchoolById);

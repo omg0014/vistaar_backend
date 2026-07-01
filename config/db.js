@@ -1,6 +1,5 @@
 'use strict';
 const { MongoClient } = require('mongodb');
-
 let db;
 
 async function getDb() {
@@ -11,3 +10,4 @@ async function getDb() {
 }
 
 module.exports = getDb;
+
