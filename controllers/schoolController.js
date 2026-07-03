@@ -4,79 +4,58 @@ const getDb = require('../config/db');
 
 async function searchSchools(req, res, next) {
   try {
+    const { type, q, page = 1, limit = 10, min1, max1, min2, max2, min3, max3, sortBy, sortOrder } = req.query;
 
-    // Get type and q based on request method
-    let type;
-    let q;
-
-    if (req.method === "POST") {
-      type = req.body.type;
-      q = req.body.q;
-    } else {
-      type = req.query.type;
-      q = req.query.q;
+    if (!type || !q || q.trim() === '') {
+      return res.status(400).json({ error: 'type and q are required' });
     }
 
-    // Check if both values are provided
-    if (!type || !q || q.trim() === "") {
-      return res.status(400).json({
-        error: "type and q are required"
-      });
-    }
-
-    // Create MongoDB filter
     let filter;
-
-    if (type === "schoolName") {
-      filter = {
-        schoolName: {
-          $regex: q.trim(),
-          $options: "i"
-        }
-      };
-
-    } else if (type === "address") {
-      filter = {
-        address: {
-          $regex: q.trim(),
-          $options: "i"
-        }
-      };
-
-    } else if (type === "cityState") {
-      filter = {
-        $or: [
-          {
-            city: {
-              $regex: q.trim(),
-              $options: "i"
-            }
-          },
-          {
-            state: {
-              $regex: q.trim(),
-              $options: "i"
-            }
-          }
-        ]
-      };
-
-    } else if (type === "pincode") {
+    if (type === 'schoolName') {
+      filter = { schoolName: { $regex: q.trim(), $options: 'i' } };
+    } else if (type === 'address') {
+      filter = { address: { $regex: q.trim(), $options: 'i' } };
+    } else if (type === 'cityState') {
+      filter = { $or: [{ city: { $regex: q.trim(), $options: 'i' } }, { state: { $regex: q.trim(), $options: 'i' } }] };
+    } else if (type === 'pincode') {
       const num = Number(q.trim());
-      filter = isNaN(num)
-        ? { pincode: q.trim() }
-        : { $or: [{ pincode: num }, { pincode: q.trim() }] };
+      filter = isNaN(num) ? { pincode: q.trim() } : { $or: [{ pincode: num }, { pincode: q.trim() }] };
     } else {
-      return res.status(400).json({ error: "Invalid type" });
+      return res.status(400).json({ error: 'Invalid type' });
     }
+
+    const pageNum  = Math.max(1, Number(page));
+    const limitNum = Math.max(1, Number(limit));
+    const skip     = (pageNum - 1) * limitNum;
+
+    const pipeline = [
+      { $match: filter },
+      { $addFields: { _eff: { $cond: { if: { $gt: [{ $ifNull: ['$totalClassrooms', 0] }, 0] }, then: { $multiply: [{ $divide: [{ $ifNull: ['$totalStudents', 0] }, { $multiply: [{ $ifNull: ['$totalClassrooms', 0] }, 35] }] }, 100] }, else: null } } } },
+    ];
+
+    const extraMatch = {};
+    if (min1 !== undefined && min1 !== '') extraMatch.totalTeachers = { ...extraMatch.totalTeachers, $gte: Number(min1) };
+    if (max1 !== undefined && max1 !== '') extraMatch.totalTeachers = { ...extraMatch.totalTeachers, $lte: Number(max1) };
+    if (min2 !== undefined && min2 !== '') extraMatch.totalStudents = { ...extraMatch.totalStudents, $gte: Number(min2) };
+    if (max2 !== undefined && max2 !== '') extraMatch.totalStudents = { ...extraMatch.totalStudents, $lte: Number(max2) };
+    if (min3 !== undefined && min3 !== '') extraMatch._eff = { ...extraMatch._eff, $gte: Number(min3) };
+    if (max3 !== undefined && max3 !== '') extraMatch._eff = { ...extraMatch._eff, $lte: Number(max3) };
+    if (Object.keys(extraMatch).length > 0) pipeline.push({ $match: extraMatch });
+
+    const dir = sortOrder === 'asc' ? 1 : -1;
+    let sortStage = { _id: 1 };
+    if (sortBy === 'teachers')   sortStage = { totalTeachers: dir };
+    if (sortBy === 'students')   sortStage = { totalStudents: dir };
+    if (sortBy === 'efficiency') sortStage = { _eff: dir };
 
     const db = await getDb();
-    const results = await db
-      .collection(process.env.COLLECTION_NAME)
-      .find(filter)
-      .toArray();
+    const [results, countResult] = await Promise.all([
+      db.collection(process.env.COLLECTION_NAME).aggregate([...pipeline, { $sort: sortStage }, { $skip: skip }, { $limit: limitNum }]).toArray(),
+      db.collection(process.env.COLLECTION_NAME).aggregate([...pipeline, { $count: 'total' }]).toArray(),
+    ]);
 
-    res.json({ total: results.length, results });
+    const total = countResult[0]?.total || 0;
+    res.json({ total, results, page: pageNum, hasMore: skip + results.length < total });
 
   } catch (err) {
     next(err);
