@@ -1,6 +1,6 @@
 'use strict';
 const { Router } = require('express');
-const { searchSchools, getSchoolById, patchLead, getLeads, removeLead, getSuggestions } = require('../controllers/schoolController');
+const { searchSchools, getSchoolById, patchLead, patchGoogleMapLoc, getLeads, removeLead, getSuggestions } = require('../controllers/schoolController');
 const { getCollections, createCollection, deleteCollection, addSchool, removeSchool } = require('../controllers/bookmarkController');
 
 const router = Router();
@@ -11,7 +11,8 @@ router.get('/search', searchSchools);
 router.get('/school/:id', getSchoolById);
 
 router.get('/leads',       getLeads);
-router.patch('/:id/lead',  patchLead);
+router.patch('/:id/lead',          patchLead);
+router.patch('/school/:id/googlemaploc', patchGoogleMapLoc);
 router.delete('/:id/lead', removeLead);
 
 router.get('/bookmarks',                          getCollections);
