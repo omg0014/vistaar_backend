@@ -80,6 +80,19 @@ async function getSchoolById(req, res, next) {
   }
 }
 
+async function patchGoogleMapLoc(req, res, next) {
+  try {
+    const { id } = req.params;
+    const { googleMapLoc } = req.body;
+    const db = await getDb();
+    await db.collection(process.env.COLLECTION_NAME)
+      .updateOne({ _id: new ObjectId(id) }, { $set: { googleMapLoc: googleMapLoc || '' } });
+    res.json({ success: true });
+  } catch (err) {
+    next(err);
+  }
+}
+
 async function patchLead(req, res, next) {
   try {
     const { id } = req.params;
@@ -147,5 +160,5 @@ async function getSuggestions(req, res, next) {
   }
 }
 
-module.exports = { searchSchools, getSchoolById, patchLead, getLeads, removeLead, getSuggestions };
+module.exports = { searchSchools, getSchoolById, patchLead, patchGoogleMapLoc, getLeads, removeLead, getSuggestions };
 
