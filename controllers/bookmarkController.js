@@ -7,7 +7,7 @@ const COLL = 'bookmarks';
 async function getCollections(req, res, next) {
   try {
     const db = await getDb();
-    const cols = await db.collection(COLL).find({}).toArray();
+    const cols = await db.collection(COLL).find({}).sort({ lastUpdatedAt: -1 }).toArray();
     res.json(cols);
   } catch (err) { next(err); }
 }
@@ -17,7 +17,7 @@ async function createCollection(req, res, next) {
     const { name } = req.body;
     if (!name) return res.status(400).json({ error: 'name required' });
     const db = await getDb();
-    const result = await db.collection(COLL).insertOne({ name, schools: [], createdAt: new Date() });
+    const result = await db.collection(COLL).insertOne({ name, schools: [], createdAt: new Date(), lastUpdatedAt: new Date() });
     res.json({ _id: result.insertedId, name, schools: [] });
   } catch (err) { next(err); }
 }
@@ -38,7 +38,7 @@ async function addSchool(req, res, next) {
     if (!existing) {
       await db.collection(COLL).updateOne(
         { _id: new ObjectId(req.params.id) },
-        { $push: { schools: school } }
+        { $push: { schools: school }, $set: { lastUpdatedAt: new Date() } }
       );
     }
     res.json({ success: true });
