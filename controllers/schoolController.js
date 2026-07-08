@@ -4,7 +4,7 @@ const getDb = require('../config/db');
 
 async function searchSchools(req, res, next) {
   try {
-    const { type, q, page = 1, limit = 10, min1, max1, min2, max2, min3, max3, sortBy, sortOrder } = req.query;
+    const { type, q, page = 1, limit = 10, min1, max1, min2, max2, min3, max3, sortBy, sortOrder, fCity, fDistrict, fState, fPin, fArea, fName } = req.query;
 
     if (!type || !q || q.trim() === '') {
       return res.status(400).json({ error: 'type and q are required' });
@@ -40,6 +40,12 @@ async function searchSchools(req, res, next) {
     if (max2 !== undefined && max2 !== '') extraMatch.totalStudents = { ...extraMatch.totalStudents, $lte: Number(max2) };
     if (min3 !== undefined && min3 !== '') extraMatch._eff = { ...extraMatch._eff, $gte: Number(min3) };
     if (max3 !== undefined && max3 !== '') extraMatch._eff = { ...extraMatch._eff, $lte: Number(max3) };
+    if (fCity)     extraMatch.city       = { $regex: fCity.trim(),     $options: 'i' };
+    if (fDistrict) extraMatch.district   = { $regex: fDistrict.trim(), $options: 'i' };
+    if (fState)    extraMatch.state      = { $regex: fState.trim(),    $options: 'i' };
+    if (fPin)      { const pNum = Number(fPin.trim()); extraMatch.pincode = isNaN(pNum) ? fPin.trim() : { $in: [pNum, fPin.trim()] }; }
+    if (fArea)     extraMatch.address    = { $regex: fArea.trim(),     $options: 'i' };
+    if (fName)     extraMatch.schoolName = { $regex: fName.trim(),     $options: 'i' };
     if (Object.keys(extraMatch).length > 0) pipeline.push({ $match: extraMatch });
 
     const dir = sortOrder === 'asc' ? 1 : -1;
