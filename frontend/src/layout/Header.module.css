@@ -1,0 +1,88 @@
+.innerContainer {
+  max-width: 1140px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* Top banner */
+.topBanner {
+  background: #e95455;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  display: flex;
+}
+
+.topBanner .innerContainer {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 6px 16px;
+}
+
+.sep {
+  margin: 0 10px;
+  opacity: 0.7;
+}
+
+.bannerLink {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.bannerLink:hover {
+  text-decoration: underline;
+}
+
+/* Main header */
+.header {
+  background: #fff;
+  border-bottom: 1px solid #ebebeb;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+.headerInner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.headerLeft { display: flex; align-items: center; }
+
+.logoLink { display: flex; align-items: center; }
+
+.kysLogo {
+  height: 40px;
+  width: auto;
+  display: block;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.udiseLogo {
+  height: 26px;
+  width: auto;
+  object-fit: contain;
+}
+
+.deptLogo {
+  height: 38px;
+  width: auto;
+  object-fit: contain;
+}
+
+@media (max-width: 768px) {
+  .headerRight { gap: 8px; }
+  .deptLogo    { height: 30px; }
+  .kysLogo     { height: 32px; }
+  .udiseLogo   { height: 22px; }
+}

@@ -1,0 +1,294 @@
+.page {
+  padding: 28px 24px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+/* ── Header ────────────────────────────────────────────────── */
+.header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0 0 4px;
+}
+
+.subtitle {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+/* ── Toggle buttons ─────────────────────────────────────────── */
+.toggleGroup {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 32px;
+}
+
+.btnTimeline {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 22px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  background: #3d2d8e;
+  color: #fff;
+  transition: opacity 0.15s;
+}
+
+.btnList {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 22px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  background: #3d2d8e;
+  color: #fff;
+  transition: opacity 0.15s;
+}
+
+.btnActive {
+  background: #e84393 !important;
+}
+
+.btnTimeline:hover,
+.btnList:hover {
+  opacity: 0.88;
+}
+
+/* ── Loading / Error ────────────────────────────────────────── */
+.centerMsg {
+  text-align: center;
+  padding: 60px 20px;
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   TIMELINE VIEW
+══════════════════════════════════════════════════════════════ */
+.timeline {
+  position: relative;
+  padding: 8px 0 8px;
+}
+
+.timelineLine {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #d1d5db;
+  transform: translateX(-50%);
+  z-index: 0;
+}
+
+.timelineRow {
+  display: grid;
+  grid-template-columns: 1fr 28px 1fr;
+  gap: 0 20px;
+  align-items: flex-start;
+  margin-bottom: 36px;
+  position: relative;
+}
+
+/* Center column — dot only */
+.timelineCenter {
+  display: flex;
+  justify-content: center;
+  padding-top: 10px;
+  z-index: 1;
+}
+
+.dot {
+  width: 14px;
+  height: 14px;
+  background: #e84393;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px #e84393;
+  flex-shrink: 0;
+}
+
+/* Shared card */
+.tlCard {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 14px 16px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+/* Odd rows (0, 2, 4…): card on LEFT, year on RIGHT */
+.tlLeft  { display: flex; justify-content: flex-end; }
+.tlRight { display: flex; justify-content: flex-start; }
+
+/* Year pill (used in both sides) */
+.yearPill {
+  display: inline-block;
+  background: #e84393;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.78rem;
+  padding: 5px 16px;
+  border-radius: 20px;
+  margin-top: 8px;
+  white-space: nowrap;
+}
+
+.tlCardInner {
+  width: 100%;
+  max-width: 380px;
+}
+
+.tlName {
+  display: block;
+  color: #3d2d8e;
+  font-weight: 700;
+  font-size: 0.88rem;
+  margin-bottom: 10px;
+  text-decoration: none;
+  line-height: 1.35;
+}
+.tlName:hover { text-decoration: underline; }
+
+.tlGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px 16px;
+}
+
+.tlField { font-size: 0.76rem; color: #374151; }
+.tlLabel { font-weight: 600; color: #6b7280; }
+
+/* ══════════════════════════════════════════════════════════════
+   LIST VIEW
+══════════════════════════════════════════════════════════════ */
+.listContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.listEntry {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.listLeft {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-width: 80px;
+  padding: 18px 12px;
+  gap: 6px;
+}
+
+.calIcon {
+  color: #9ca3af;
+}
+
+.listYear {
+  color: #e84393;
+  font-weight: 700;
+  font-size: 0.82rem;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.listDivider {
+  width: 1px;
+  background: #e5e7eb;
+  align-self: stretch;
+  flex-shrink: 0;
+}
+
+.listRight {
+  flex: 1;
+  min-width: 0;
+  padding: 16px 20px;
+}
+
+.listName {
+  display: block;
+  color: #3d2d8e;
+  font-weight: 700;
+  font-size: 0.93rem;
+  margin-bottom: 10px;
+  text-decoration: none;
+  line-height: 1.35;
+}
+.listName:hover { text-decoration: underline; }
+
+.listGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px 40px;
+}
+
+.listField { font-size: 0.78rem; color: #374151; }
+.listLabel { font-weight: 600; color: #6b7280; }
+
+.statusTag {
+  display: inline-block;
+  background: #d1fae5;
+  color: #065f46;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 2px 9px;
+  border-radius: 10px;
+  vertical-align: middle;
+}
+.statusTagRed {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* ── Mobile responsive ─────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .page { padding: 20px 14px; }
+
+  .toggleGroup { flex-wrap: wrap; gap: 8px; }
+
+  /* Collapse timeline to single right-side column */
+  .timelineLine { left: 14px; transform: none; }
+
+  .timelineRow {
+    grid-template-columns: 0 28px 1fr;
+    gap: 0 10px;
+  }
+
+  .tlLeft { display: none; }
+
+  .tlRight { justify-content: flex-start; }
+
+  .tlCardInner { max-width: 100%; }
+
+  /* List view */
+  .listGrid { grid-template-columns: 1fr; gap: 4px 0; }
+
+  .listLeft { min-width: 64px; padding: 14px 8px; }
+
+  .listRight { padding: 12px 14px; }
+}

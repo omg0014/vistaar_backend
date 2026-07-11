@@ -1,0 +1,190 @@
+.card {
+  background: white;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.topRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.badges {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.udiseBadge {
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.udiseCode {
+  background: #FCE7F3;
+  color: #BE185D;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-left: 5px;
+}
+
+.statusBadge {
+  background: #10B981;
+  color: white;
+  padding: 2px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.locationInfo {
+  font-size: 12px;
+  color: #374151;
+  font-weight: 600;
+  text-align: right;
+}
+
+.locationInfo span {
+  color: #6B7280;
+  font-weight: normal;
+}
+
+.schoolTitleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #E5E7EB;
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+}
+
+.schoolName {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1F2937;
+  text-transform: uppercase;
+}
+
+.academicYear {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.detailsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
+}
+
+.detailCol {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.detailItem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.detailLabel {
+  font-size: 12px;
+  font-weight: 700;
+  color: #374151;
+}
+
+.detailValue {
+  font-size: 13px;
+  color: #4B5563;
+}
+
+.rightPanel {
+  background: #F9FAFB;
+  border-radius: 6px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.addressBox {
+  margin-bottom: 15px;
+}
+
+.btnGroup {
+  display: flex;
+  gap: 10px;
+}
+
+.cardBtn {
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+  transition: opacity 0.15s;
+}
+
+.cardBtn:hover { opacity: 0.85; }
+
+.reportBtn {
+  background: #EF4444;
+  color: white;
+}
+
+.knowBtn {
+  background: #4A2679;
+  color: white;
+}
+
+.trackBtn {
+  background: white;
+  border: 1px solid #4A2679;
+  color: #4A2679;
+}
+
+.lastModified {
+  text-align: right;
+  font-size: 10px;
+  font-style: italic;
+  color: #9CA3AF;
+  margin-top: 10px;
+}
+
+/* ── Mobile responsive ─────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .topRow { flex-wrap: wrap; gap: 6px; }
+
+  .locationInfo { text-align: left; }
+
+  .schoolTitleRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .detailsGrid {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .btnGroup { flex-wrap: wrap; }
+}
+
+@media (max-width: 420px) {
+  .detailsGrid { grid-template-columns: 1fr; gap: 8px; }
+
+  .cardBtn { flex: 1; min-width: 80px; }
+
+  .card { padding: 12px; }
+}

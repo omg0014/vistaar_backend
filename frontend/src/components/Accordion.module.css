@@ -1,0 +1,25 @@
+.accordion {
+  border: 1px solid #E5E7EB;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 10px;
+  background: white;
+}
+
+.accordionHeader {
+  background: #4A2679;
+  color: white;
+  padding: 12px 15px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+}
+
+.accordionBody {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
