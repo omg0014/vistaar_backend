@@ -6,9 +6,10 @@ const errorHandler = require('./middlewares/errorHandler');
 const requireAuth  = require('./middlewares/requireAuth');
 
 const app = express();
-if (process.env.NODE_ENV !== 'production') {
-  app.use(cors({ origin: true, credentials: true }));
-}
+const allowedOrigins = process.env.NODE_ENV === 'production'
+  ? (process.env.FRONTEND_URL || '').split(',').filter(Boolean)
+  : true;
+app.use(cors({ origin: allowedOrigins, credentials: true }));
 app.use(express.json());
 
 app.use('/api/auth',    require('./routes/auth'));
