@@ -1,16 +1,28 @@
 'use strict';
 require('dotenv').config();
-const express = require('express');
-const schoolRouter = require('./routes/school');
+const express      = require('express');
+const cors         = require('cors');
 const errorHandler = require('./middlewares/errorHandler');
+const requireAuth  = require('./middlewares/requireAuth');
 
 const app = express();
-const cors = require('cors');
-app.use(cors());
+const ALLOWED_ORIGINS = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  process.env.FRONTEND_URL,
+].filter(Boolean);
+
+app.use(cors({ origin: ALLOWED_ORIGINS, credentials: true }));
 app.use(express.json());
 
-app.use('/api/schools', schoolRouter);
+app.use('/api/auth',    require('./routes/auth'));
+app.use('/api/schools', requireAuth, require('./routes/school'));
+
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => console.log(`Backend → http://localhost:${PORT}`));
+if (require.main === module) {
+  const PORT = process.env.PORT || 3001;
+  app.listen(PORT, () => console.log(`Backend → http://localhost:${PORT}`));
+}
+
+module.exports = app;
