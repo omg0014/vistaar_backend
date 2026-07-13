@@ -10,9 +10,12 @@ const ALLOWED_ORIGINS = [
   'http://localhost:5173',
   'http://localhost:3000',
   process.env.FRONTEND_URL,
+  process.env.ALLOWED_ORIGINS,
 ].filter(Boolean);
 
-app.use(cors({ origin: ALLOWED_ORIGINS, credentials: true }));
+const corsOptions = { origin: ALLOWED_ORIGINS, credentials: true };
+app.options('*', cors(corsOptions));
+app.use(cors(corsOptions));
 app.use(express.json());
 
 app.use('/api/auth',    require('./routes/auth'));
