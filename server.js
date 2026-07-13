@@ -6,14 +6,7 @@ const errorHandler = require('./middlewares/errorHandler');
 const requireAuth  = require('./middlewares/requireAuth');
 
 const app = express();
-const ALLOWED_ORIGINS = [
-  'http://localhost:5173',
-  'http://localhost:3000',
-  process.env.FRONTEND_URL,
-  process.env.ALLOWED_ORIGINS,
-].filter(Boolean);
-
-const corsOptions = { origin: ALLOWED_ORIGINS, credentials: true };
+const corsOptions = { origin: true, credentials: true };
 app.options('*', cors(corsOptions));
 app.use(cors(corsOptions));
 app.use(express.json());
