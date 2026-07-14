@@ -2,7 +2,7 @@
 const { Router } = require('express');
 const { searchSchools, getSchoolById, patchLead, patchGoogleMapLoc, getLeads, removeLead, getSuggestions } = require('../controllers/schoolController');
 const { getCollections, createCollection, deleteCollection, addSchool, removeSchool } = require('../controllers/bookmarkController');
-const { list: listSavedSearches, create: createSavedSearch, remove: removeSavedSearch } = require('../controllers/savedSearchController');
+const { getCollections: getSearchCols, createCollection: createSearchCol, deleteCollection: deleteSearchCol, addSearch, removeSearch } = require('../controllers/savedSearchController');
 
 const router = Router();
 
@@ -16,9 +16,11 @@ router.patch('/:id/lead',          patchLead);
 router.patch('/school/:id/googlemaploc', patchGoogleMapLoc);
 router.delete('/:id/lead', removeLead);
 
-router.get('/saved-searches',                     listSavedSearches);
-router.post('/saved-searches',                    createSavedSearch);
-router.delete('/saved-searches/:id',              removeSavedSearch);
+router.get('/search-collections',                           getSearchCols);
+router.post('/search-collections',                          createSearchCol);
+router.delete('/search-collections/:id',                    deleteSearchCol);
+router.post('/search-collections/:id/searches',             addSearch);
+router.delete('/search-collections/:id/searches/:searchId', removeSearch);
 
 router.get('/bookmarks',                          getCollections);
 router.post('/bookmarks',                         createCollection);
