@@ -9,6 +9,9 @@ const cors = require('cors');
 app.use(cors());
 app.use(express.json());
 
+// Liveness probe for the deploy pipeline / load balancer.
+app.get('/health', (req, res) => res.json({ status: 'ok' }));
+
 app.use('/api/schools', schoolRouter);
 app.use(errorHandler);
 
