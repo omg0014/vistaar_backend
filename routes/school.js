@@ -6,23 +6,22 @@ const { getCollections: getSearchCols, createCollection: createSearchCol, delete
 
 const router = Router();
 
-router.get('/suggestions', getSuggestions);
+router.post('/suggestions', getSuggestions);
 router.post('/search', searchSchools);
-router.get('/search', searchSchools);
-router.get('/school/:id', getSchoolById);
+router.post('/school/:id', getSchoolById);
 
-router.get('/leads',       getLeads);
+router.post('/leads',       getLeads);
 router.patch('/:id/lead',          patchLead);
 router.patch('/school/:id/googlemaploc', patchGoogleMapLoc);
 router.delete('/:id/lead', removeLead);
 
-router.get('/search-collections',                           getSearchCols);
+router.post('/search-collections/list',                     getSearchCols);
 router.post('/search-collections',                          createSearchCol);
 router.delete('/search-collections/:id',                    deleteSearchCol);
 router.post('/search-collections/:id/searches',             addSearch);
 router.delete('/search-collections/:id/searches/:searchId', removeSearch);
 
-router.get('/bookmarks',                          getCollections);
+router.post('/bookmarks/list',                    getCollections);
 router.post('/bookmarks',                         createCollection);
 router.delete('/bookmarks/:id',                   deleteCollection);
 router.post('/bookmarks/:id/schools',             addSchool);

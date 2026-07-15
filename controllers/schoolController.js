@@ -4,7 +4,7 @@ const getDb = require('../config/db');
 
 async function searchSchools(req, res, next) {
   try {
-    const { type, q, page = 1, limit = 10, min1, max1, min2, max2, min3, max3, sortBy, sortOrder, fCity, fDistrict, fState, fPin, fArea, fName } = req.query;
+    const { type, q, page = 1, limit = 10, min1, max1, min2, max2, min3, max3, sortBy, sortOrder, fCity, fDistrict, fState, fPin, fArea, fName } = req.body;
 
     if (!type || !q || q.trim() === '') {
       return res.status(400).json({ error: 'type and q are required' });
@@ -152,7 +152,7 @@ async function removeLead(req, res, next) {
 
 async function getSuggestions(req, res, next) {
   try {
-    const q = req.query.q || '';
+    const q = req.body.q || '';
     if (q.trim().length < 2) return res.json([]);
     const db = await getDb();
     const results = await db.collection(process.env.COLLECTION_NAME)
