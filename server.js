@@ -16,6 +16,8 @@ app.get('/health', (req, res) => res.json({ status: 'ok' }));
 
 app.use('/api/auth',    require('./routes/auth'));
 app.use('/api/schools', requireAuth, require('./routes/school'));
+app.use('/api/admin',   requireAuth, require('./routes/admin'));
+app.use('/api/broker',  requireAuth, require('./routes/broker'));
 
 app.use(errorHandler);
 
