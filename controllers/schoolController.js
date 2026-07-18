@@ -86,6 +86,27 @@ async function getSchoolById(req, res, next) {
   }
 }
 
+async function getPublicSchool(req, res, next) {
+  try {
+    const { slug } = req.params;
+    const db = await getDb();
+    const col = db.collection(process.env.COLLECTION_NAME);
+    let school;
+
+    if (/^[0-9a-f]{24}$/i.test(slug)) {
+      school = await col.findOne({ _id: new ObjectId(slug) });
+    } else {
+      const pattern = slug.replace(/-+/g, '[^a-z0-9]+');
+      school = await col.findOne({ schoolName: { $regex: new RegExp('^' + pattern + '$', 'i') } });
+    }
+
+    if (!school) return res.status(404).json({ error: 'School not found' });
+    res.json(school);
+  } catch (err) {
+    next(err);
+  }
+}
+
 async function patchGoogleMapLoc(req, res, next) {
   try {
     const { id } = req.params;
@@ -166,5 +187,5 @@ async function getSuggestions(req, res, next) {
   }
 }
 
-module.exports = { searchSchools, getSchoolById, patchLead, patchGoogleMapLoc, getLeads, removeLead, getSuggestions };
+module.exports = { searchSchools, getSchoolById, getPublicSchool, patchLead, patchGoogleMapLoc, getLeads, removeLead, getSuggestions };
 

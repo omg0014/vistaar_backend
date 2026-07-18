@@ -1,8 +1,8 @@
 'use strict';
 const { Router } = require('express');
-const { getSchoolById } = require('../controllers/schoolController');
+const { getPublicSchool } = require('../controllers/schoolController');
 
 const router = Router();
-router.get('/school/:id', getSchoolById);
+router.get('/school/:slug', getPublicSchool);
 
 module.exports = router;
