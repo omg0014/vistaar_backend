@@ -1,7 +1,7 @@
 'use strict';
 const { Router } = require('express');
-const { searchSchools, getSchoolById, patchLead, patchGoogleMapLoc, getLeads, removeLead, getSuggestions, shareLead, unshareLead } = require('../controllers/schoolController');
-const { getCollections, createCollection, deleteCollection, addSchool, removeSchool } = require('../controllers/bookmarkController');
+const { searchSchools, getSchoolById, patchLead, patchGoogleMapLoc, getLeads, removeLead, getSuggestions } = require('../controllers/schoolController');
+const { getCollections, createCollection, deleteCollection, addSchool, removeSchool, shareCollection, unshareCollection } = require('../controllers/bookmarkController');
 const { getCollections: getSearchCols, createCollection: createSearchCol, deleteCollection: deleteSearchCol, addSearch, removeSearch } = require('../controllers/savedSearchController');
 const requireAdmin = require('../middlewares/requireAdmin');
 
@@ -15,8 +15,6 @@ router.post('/leads',       getLeads);
 router.patch('/:id/lead',          patchLead);
 router.patch('/school/:id/googlemaploc', patchGoogleMapLoc);
 router.delete('/:id/lead', removeLead);
-router.post('/:id/share',   requireAdmin, shareLead);
-router.post('/:id/unshare', requireAdmin, unshareLead);
 
 router.post('/search-collections/list',                     getSearchCols);
 router.post('/search-collections',                          createSearchCol);
@@ -29,5 +27,7 @@ router.post('/bookmarks',                         createCollection);
 router.delete('/bookmarks/:id',                   deleteCollection);
 router.post('/bookmarks/:id/schools',             addSchool);
 router.delete('/bookmarks/:id/schools/:schoolId', removeSchool);
+router.post('/bookmarks/:id/share',   requireAdmin, shareCollection);
+router.post('/bookmarks/:id/unshare', requireAdmin, unshareCollection);
 
 module.exports = router;

@@ -166,33 +166,5 @@ async function getSuggestions(req, res, next) {
   }
 }
 
-async function shareLead(req, res, next) {
-  try {
-    const { id } = req.params;
-    const { brokerEmail } = req.body;
-    if (!brokerEmail) return res.status(400).json({ error: 'brokerEmail is required' });
-    const db = await getDb();
-    await db.collection(process.env.COLLECTION_NAME).updateOne(
-      { _id: new ObjectId(id) },
-      { $addToSet: { sharedWith: brokerEmail } }
-    );
-    res.json({ success: true });
-  } catch (err) { next(err); }
-}
-
-async function unshareLead(req, res, next) {
-  try {
-    const { id } = req.params;
-    const { brokerEmail } = req.body;
-    if (!brokerEmail) return res.status(400).json({ error: 'brokerEmail is required' });
-    const db = await getDb();
-    await db.collection(process.env.COLLECTION_NAME).updateOne(
-      { _id: new ObjectId(id) },
-      { $pull: { sharedWith: brokerEmail } }
-    );
-    res.json({ success: true });
-  } catch (err) { next(err); }
-}
-
-module.exports = { searchSchools, getSchoolById, patchLead, patchGoogleMapLoc, getLeads, removeLead, getSuggestions, shareLead, unshareLead };
+module.exports = { searchSchools, getSchoolById, patchLead, patchGoogleMapLoc, getLeads, removeLead, getSuggestions };
 

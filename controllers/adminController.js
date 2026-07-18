@@ -34,8 +34,8 @@ async function deleteBroker(req, res, next) {
     const db = await getDb();
     const broker = await db.collection('users').findOne({ _id: new ObjectId(req.params.id), role: 'broker' });
     if (!broker) return res.status(404).json({ error: 'Broker not found' });
-    // Remove this broker from all shared leads
-    await db.collection(process.env.COLLECTION_NAME).updateMany(
+    // Remove this broker from all shared bookmark collections
+    await db.collection('bookmarks').updateMany(
       { sharedWith: broker.email },
       { $pull: { sharedWith: broker.email } }
     );
@@ -44,17 +44,17 @@ async function deleteBroker(req, res, next) {
   } catch (err) { next(err); }
 }
 
-async function getBrokerLeads(req, res, next) {
+async function getBrokerCollections(req, res, next) {
   try {
     const db = await getDb();
     const broker = await db.collection('users').findOne({ _id: new ObjectId(req.params.id), role: 'broker' });
     if (!broker) return res.status(404).json({ error: 'Broker not found' });
-    const leads = await db.collection(process.env.COLLECTION_NAME)
+    const collections = await db.collection('bookmarks')
       .find({ sharedWith: broker.email })
-      .sort({ leadVisitedAt: -1 })
+      .sort({ lastUpdatedAt: -1 })
       .toArray();
-    res.json({ broker, leads });
+    res.json({ broker, collections });
   } catch (err) { next(err); }
 }
 
-module.exports = { getBrokers, createBroker, deleteBroker, getBrokerLeads };
+module.exports = { getBrokers, createBroker, deleteBroker, getBrokerCollections };

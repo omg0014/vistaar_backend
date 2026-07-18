@@ -56,4 +56,30 @@ async function removeSchool(req, res, next) {
   } catch (err) { next(err); }
 }
 
-module.exports = { getCollections, createCollection, deleteCollection, addSchool, removeSchool };
+async function shareCollection(req, res, next) {
+  try {
+    const { brokerEmail } = req.body;
+    if (!brokerEmail) return res.status(400).json({ error: 'brokerEmail is required' });
+    const db = await getDb();
+    await db.collection(COLL).updateOne(
+      { _id: new ObjectId(req.params.id) },
+      { $addToSet: { sharedWith: brokerEmail } }
+    );
+    res.json({ success: true });
+  } catch (err) { next(err); }
+}
+
+async function unshareCollection(req, res, next) {
+  try {
+    const { brokerEmail } = req.body;
+    if (!brokerEmail) return res.status(400).json({ error: 'brokerEmail is required' });
+    const db = await getDb();
+    await db.collection(COLL).updateOne(
+      { _id: new ObjectId(req.params.id) },
+      { $pull: { sharedWith: brokerEmail } }
+    );
+    res.json({ success: true });
+  } catch (err) { next(err); }
+}
+
+module.exports = { getCollections, createCollection, deleteCollection, addSchool, removeSchool, shareCollection, unshareCollection };
