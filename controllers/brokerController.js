@@ -1,15 +1,15 @@
 'use strict';
 const getDb = require('../config/db');
 
-async function getSharedLeads(req, res, next) {
+async function getSharedCollections(req, res, next) {
   try {
     const db = await getDb();
-    const leads = await db.collection(process.env.COLLECTION_NAME)
+    const collections = await db.collection('bookmarks')
       .find({ sharedWith: req.user.email })
-      .sort({ leadVisitedAt: -1 })
+      .sort({ lastUpdatedAt: -1 })
       .toArray();
-    res.json({ leads });
+    res.json({ collections });
   } catch (err) { next(err); }
 }
 
-module.exports = { getSharedLeads };
+module.exports = { getSharedCollections };
