@@ -1,2 +1,31 @@
+# Dependencies
 node_modules/
+
+# Environment / secrets — never commit real env files, but keep the template.
+# On the server these values come from the GitLab File variable APP_ENV.
 .env
+.env.*
+!.env.example
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Test coverage (jest)
+coverage/
+
+# pm2 runtime (see ecosystem.config.cjs)
+.pm2/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp

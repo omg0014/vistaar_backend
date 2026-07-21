@@ -7,7 +7,7 @@ const COLL = 'search_collections';
 async function getCollections(req, res, next) {
   try {
     const db = await getDb();
-    const cols = await db.collection(COLL).find({}).sort({ lastUpdatedAt: -1 }).toArray();
+    const cols = await db.collection(COLL).find({}).sort({ lastUpdatedAt: -1 }).limit(500).toArray();
     res.json(cols);
   } catch (err) { next(err); }
 }

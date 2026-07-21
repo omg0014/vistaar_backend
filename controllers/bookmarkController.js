@@ -7,7 +7,7 @@ const COLL = 'bookmarks';
 async function getCollections(req, res, next) {
   try {
     const db = await getDb();
-    const cols = await db.collection(COLL).find({}).sort({ lastUpdatedAt: -1 }).toArray();
+    const cols = await db.collection(COLL).find({}).sort({ lastUpdatedAt: -1 }).limit(500).toArray();
     res.json(cols);
   } catch (err) { next(err); }
 }
@@ -33,14 +33,15 @@ async function deleteCollection(req, res, next) {
 async function addSchool(req, res, next) {
   try {
     const { school } = req.body;
+    if (!school || !school._id) return res.status(400).json({ error: 'school with an _id is required' });
     const db = await getDb();
-    const existing = await db.collection(COLL).findOne({ _id: new ObjectId(req.params.id), 'schools._id': school._id });
-    if (!existing) {
-      await db.collection(COLL).updateOne(
-        { _id: new ObjectId(req.params.id) },
-        { $push: { schools: school }, $set: { lastUpdatedAt: new Date() } }
-      );
-    }
+    // Single atomic op: push only if this school isn't already present. The old
+    // find-then-update had a TOCTOU race where two concurrent adds both saw the
+    // school as absent and pushed duplicates.
+    await db.collection(COLL).updateOne(
+      { _id: new ObjectId(req.params.id), 'schools._id': { $ne: school._id } },
+      { $push: { schools: school }, $set: { lastUpdatedAt: new Date() } }
+    );
     res.json({ success: true });
   } catch (err) { next(err); }
 }
@@ -58,7 +59,7 @@ async function removeSchool(req, res, next) {
 
 async function shareCollection(req, res, next) {
   try {
-    const { brokerEmail } = req.body;
+    const brokerEmail = req.body.brokerEmail?.trim().toLowerCase();
     if (!brokerEmail) return res.status(400).json({ error: 'brokerEmail is required' });
     const db = await getDb();
     await db.collection(COLL).updateOne(
@@ -71,7 +72,7 @@ async function shareCollection(req, res, next) {
 
 async function unshareCollection(req, res, next) {
   try {
-    const { brokerEmail } = req.body;
+    const brokerEmail = req.body.brokerEmail?.trim().toLowerCase();
     if (!brokerEmail) return res.status(400).json({ error: 'brokerEmail is required' });
     const db = await getDb();
     await db.collection(COLL).updateOne(

@@ -19,13 +19,14 @@ stages:
 variables:
   DEPLOY_PATH: "/srv/vistaar-backend"
 
-# Build gate — no build step; verify deps install and the entrypoint parses.
+# Build gate — verify deps install, the entrypoint parses, and tests pass.
 build_test:
   stage: ci
   image: node:20-bullseye
   script:
     - npm ci
     - node --check server.js
+    - npm test
     - echo "gate OK"
 
 deploy_production:
