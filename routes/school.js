@@ -1,7 +1,7 @@
 'use strict';
 const { Router } = require('express');
 const { searchSchools, getSchoolById, patchLead, patchGoogleMapLoc, getLeads, removeLead, getSuggestions } = require('../controllers/schoolController');
-const { getCollections, createCollection, deleteCollection, addSchool, removeSchool, shareCollection, unshareCollection } = require('../controllers/bookmarkController');
+const { getCollections, reorderCollections, createCollection, deleteCollection, addSchool, removeSchool, reorderSchools, shareCollection, unshareCollection } = require('../controllers/bookmarkController');
 const { getCollections: getSearchCols, createCollection: createSearchCol, deleteCollection: deleteSearchCol, addSearch, removeSearch } = require('../controllers/savedSearchController');
 const requireAdmin = require('../middlewares/requireAdmin');
 const validateObjectId = require('../middlewares/validateObjectId');
@@ -31,8 +31,10 @@ router.post('/search-collections/:id/searches',             requireAdmin, valida
 router.delete('/search-collections/:id/searches/:searchId', requireAdmin, validateObjectId('id'), removeSearch);
 
 router.post('/bookmarks/list',                    requireAdmin, getCollections);
+router.post('/bookmarks/reorder',                 requireAdmin, reorderCollections);
 router.post('/bookmarks',                         requireAdmin, createCollection);
 router.delete('/bookmarks/:id',                   requireAdmin, validateObjectId('id'), deleteCollection);
+router.post('/bookmarks/:id/schools/reorder',     requireAdmin, validateObjectId('id'), reorderSchools);
 router.post('/bookmarks/:id/schools',             requireAdmin, validateObjectId('id'), addSchool);
 router.delete('/bookmarks/:id/schools/:schoolId', requireAdmin, validateObjectId('id'), removeSchool);
 router.post('/bookmarks/:id/share',               requireAdmin, validateObjectId('id'), shareCollection);
