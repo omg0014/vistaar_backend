@@ -52,6 +52,21 @@ describe('POST /api/schools/search', () => {
     expect(res.body.results).toHaveLength(1);
   });
 
+  it('ORs multiple comma-separated city/state entities (each matching city or state)', async () => {
+    const pipelines = [];
+    getDb.mockResolvedValue(fakeSearchDb([], pipelines));
+
+    const res = await request(app)
+      .post('/api/schools/search')
+      .set('Authorization', authHeader())
+      .send({ type: 'cityState', q: 'Mumbai, Karnataka' });
+
+    expect(res.status).toBe(200);
+    const matchStage = pipelines[0].find(stage => '$match' in stage);
+    // 2 entities × (city OR state) = 4 OR clauses
+    expect(matchStage.$match.$or).toHaveLength(4);
+  });
+
   it('caps the page size instead of trusting an arbitrarily large limit', async () => {
     const pipelines = [];
     getDb.mockResolvedValue(fakeSearchDb([], pipelines));

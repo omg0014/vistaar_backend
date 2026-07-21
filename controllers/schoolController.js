@@ -33,7 +33,13 @@ async function searchSchools(req, res, next) {
     } else if (type === 'address') {
       filter = { address: { $regex: qSafe, $options: 'i' } };
     } else if (type === 'cityState') {
-      filter = { $or: [{ city: { $regex: qSafe, $options: 'i' } }, { state: { $regex: qSafe, $options: 'i' } }] };
+      // Multiple comma-separated entities are OR'd; each still matches city OR state.
+      const terms = q.split(',').map(t => t.trim()).filter(Boolean);
+      if (terms.length === 0) return res.status(400).json({ error: 'type and q are required' });
+      filter = { $or: terms.flatMap(t => {
+        const r = escapeRegex(t);
+        return [{ city: { $regex: r, $options: 'i' } }, { state: { $regex: r, $options: 'i' } }];
+      }) };
     } else if (type === 'pincode') {
       const num = Number(q.trim());
       filter = isNaN(num) ? { pincode: q.trim() } : { $or: [{ pincode: num }, { pincode: q.trim() }] };
@@ -173,7 +179,7 @@ async function getLeads(req, res, next) {
     const leads = await db.collection(process.env.COLLECTION_NAME)
       .find({ isLead: true })
       .sort({ leadVisitedAt: -1 })
-      .limit(25)
+      .limit(20)
       .toArray();
     res.json({ leads });
   } catch (err) {
