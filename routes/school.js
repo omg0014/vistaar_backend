@@ -4,30 +4,38 @@ const { searchSchools, getSchoolById, patchLead, patchGoogleMapLoc, getLeads, re
 const { getCollections, createCollection, deleteCollection, addSchool, removeSchool, shareCollection, unshareCollection } = require('../controllers/bookmarkController');
 const { getCollections: getSearchCols, createCollection: createSearchCol, deleteCollection: deleteSearchCol, addSearch, removeSearch } = require('../controllers/savedSearchController');
 const requireAdmin = require('../middlewares/requireAdmin');
+const validateObjectId = require('../middlewares/validateObjectId');
 
 const router = Router();
 
-router.post('/suggestions', getSuggestions);
-router.post('/search', searchSchools);
-router.post('/school/:id', getSchoolById);
+// The parent mount (server.js) applies requireAuth to this whole router, which
+// admits any authenticated user — INCLUDING brokers. Brokers must only ever see
+// individual report cards for schools inside collections shared with them, so
+// only POST /school/:id is left open to any authenticated user. Every other
+// route here is admin-only and must carry requireAdmin explicitly; a missing
+// guard here is a privilege-escalation bug, not a style nit.
+router.post('/school/:id', validateObjectId('id'), getSchoolById);
 
-router.post('/leads',       getLeads);
-router.patch('/:id/lead',          patchLead);
-router.patch('/school/:id/googlemaploc', patchGoogleMapLoc);
-router.delete('/:id/lead', removeLead);
+router.post('/suggestions', requireAdmin, getSuggestions);
+router.post('/search',      requireAdmin, searchSchools);
 
-router.post('/search-collections/list',                     getSearchCols);
-router.post('/search-collections',                          createSearchCol);
-router.delete('/search-collections/:id',                    deleteSearchCol);
-router.post('/search-collections/:id/searches',             addSearch);
-router.delete('/search-collections/:id/searches/:searchId', removeSearch);
+router.post('/leads',                    requireAdmin, getLeads);
+router.patch('/:id/lead',                requireAdmin, validateObjectId('id'), patchLead);
+router.patch('/school/:id/googlemaploc', requireAdmin, validateObjectId('id'), patchGoogleMapLoc);
+router.delete('/:id/lead',               requireAdmin, validateObjectId('id'), removeLead);
 
-router.post('/bookmarks/list',                    getCollections);
-router.post('/bookmarks',                         createCollection);
-router.delete('/bookmarks/:id',                   deleteCollection);
-router.post('/bookmarks/:id/schools',             addSchool);
-router.delete('/bookmarks/:id/schools/:schoolId', removeSchool);
-router.post('/bookmarks/:id/share',   requireAdmin, shareCollection);
-router.post('/bookmarks/:id/unshare', requireAdmin, unshareCollection);
+router.post('/search-collections/list',                     requireAdmin, getSearchCols);
+router.post('/search-collections',                          requireAdmin, createSearchCol);
+router.delete('/search-collections/:id',                    requireAdmin, validateObjectId('id'), deleteSearchCol);
+router.post('/search-collections/:id/searches',             requireAdmin, validateObjectId('id'), addSearch);
+router.delete('/search-collections/:id/searches/:searchId', requireAdmin, validateObjectId('id'), removeSearch);
+
+router.post('/bookmarks/list',                    requireAdmin, getCollections);
+router.post('/bookmarks',                         requireAdmin, createCollection);
+router.delete('/bookmarks/:id',                   requireAdmin, validateObjectId('id'), deleteCollection);
+router.post('/bookmarks/:id/schools',             requireAdmin, validateObjectId('id'), addSchool);
+router.delete('/bookmarks/:id/schools/:schoolId', requireAdmin, validateObjectId('id'), removeSchool);
+router.post('/bookmarks/:id/share',               requireAdmin, validateObjectId('id'), shareCollection);
+router.post('/bookmarks/:id/unshare',             requireAdmin, validateObjectId('id'), unshareCollection);
 
 module.exports = router;
