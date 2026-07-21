@@ -173,7 +173,7 @@ async function getLeads(req, res, next) {
     const leads = await db.collection(process.env.COLLECTION_NAME)
       .find({ isLead: true })
       .sort({ leadVisitedAt: -1 })
-      .limit(100)
+      .limit(25)
       .toArray();
     res.json({ leads });
   } catch (err) {
