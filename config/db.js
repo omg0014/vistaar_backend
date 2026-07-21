@@ -15,6 +15,7 @@ async function ensureIndexes(database) {
     database.collection('users').createIndex({ email: 1 }, { unique: true }),
     database.collection('bookmarks').createIndex({ sharedWith: 1 }),
     database.collection('bookmarks').createIndex({ lastUpdatedAt: -1 }),
+    database.collection('bookmarks').createIndex({ order: 1, lastUpdatedAt: -1 }),
     database.collection('search_collections').createIndex({ lastUpdatedAt: -1 }),
   ]);
 }
