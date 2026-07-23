@@ -52,6 +52,21 @@ describe('POST /api/schools/search', () => {
     expect(res.body.results).toHaveLength(1);
   });
 
+  it('filters by highest-class threshold (minClass) via a $convert $expr', async () => {
+    const pipelines = [];
+    getDb.mockResolvedValue(fakeSearchDb([], pipelines));
+
+    const res = await request(app)
+      .post('/api/schools/search')
+      .set('Authorization', authHeader())
+      .send({ type: 'schoolName', q: 'x', minClass: 7 });
+
+    expect(res.status).toBe(200);
+    const matchWithExpr = pipelines[0].find(stage => stage.$match && stage.$match.$expr);
+    expect(matchWithExpr).toBeTruthy();
+    expect(matchWithExpr.$match.$expr.$gte[1]).toBe(7);
+  });
+
   it('ORs multiple comma-separated city/state entities (each matching city or state)', async () => {
     const pipelines = [];
     getDb.mockResolvedValue(fakeSearchDb([], pipelines));
