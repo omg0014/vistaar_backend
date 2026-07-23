@@ -20,7 +20,7 @@ const EFF_ADD_FIELDS = {
 
 async function searchSchools(req, res, next) {
   try {
-    const { type, q, page = 1, limit = 10, min1, max1, min2, max2, min3, max3, sortBy, sortOrder, fCity, fDistrict, fState, fPin, fArea, fName } = req.body;
+    const { type, q, page = 1, limit = 10, min1, max1, min2, max2, min3, max3, minClass, sortBy, sortOrder, fCity, fDistrict, fState, fPin, fArea, fName } = req.body;
 
     if (!type || !q || q.trim() === '') {
       return res.status(400).json({ error: 'type and q are required' });
@@ -64,6 +64,14 @@ async function searchSchools(req, res, next) {
     if (fPin)      { const pNum = Number(fPin.trim()); extraMatch.pincode = isNaN(pNum) ? fPin.trim() : { $in: [pNum, fPin.trim()] }; }
     if (fArea)     extraMatch.address    = { $regex: escapeRegex(fArea.trim()),     $options: 'i' };
     if (fName)     extraMatch.schoolName = { $regex: escapeRegex(fName.trim()),     $options: 'i' };
+    // Highest-class threshold: keep schools whose highestClass >= minClass. Tolerant of
+    // numeric or string-stored values; non-numeric/missing highestClass is excluded.
+    if (minClass !== undefined && minClass !== '') {
+      const n = Number(minClass);
+      if (!isNaN(n)) {
+        extraMatch.$expr = { $gte: [{ $convert: { input: '$highestClass', to: 'int', onError: -1, onNull: -1 } }, n] };
+      }
+    }
 
     // The computed _eff field is only needed when we filter or sort on it.
     // Filtering needs it in BOTH the results and the count pipeline; sorting
