@@ -17,6 +17,8 @@ async function ensureIndexes(database) {
     database.collection('bookmarks').createIndex({ lastUpdatedAt: -1 }),
     database.collection('bookmarks').createIndex({ order: 1, lastUpdatedAt: -1 }),
     database.collection('search_collections').createIndex({ lastUpdatedAt: -1 }),
+    database.collection('disclosure_requests').createIndex({ schoolId: 1 }, { unique: true }),
+    database.collection('disclosure_requests').createIndex({ status: 1, requestedAt: -1 }),
   ]);
 }
 

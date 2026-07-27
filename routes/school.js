@@ -1,6 +1,7 @@
 'use strict';
 const { Router } = require('express');
 const { searchSchools, getSchoolById, patchLead, patchGoogleMapLoc, getLeads, removeLead, getSuggestions } = require('../controllers/schoolController');
+const { patchDisclosureUrl, createDisclosureRequest, listDisclosureRequests, resolveDisclosureRequest } = require('../controllers/disclosureController');
 const { getCollections, reorderCollections, createCollection, deleteCollection, addSchool, removeSchool, reorderSchools, shareCollection, unshareCollection } = require('../controllers/bookmarkController');
 const { getCollections: getSearchCols, createCollection: createSearchCol, deleteCollection: deleteSearchCol, addSearch, removeSearch } = require('../controllers/savedSearchController');
 const requireAdmin = require('../middlewares/requireAdmin');
@@ -23,6 +24,12 @@ router.post('/leads',                    requireAdmin, getLeads);
 router.patch('/:id/lead',                requireAdmin, validateObjectId('id'), patchLead);
 router.patch('/school/:id/googlemaploc', requireAdmin, validateObjectId('id'), patchGoogleMapLoc);
 router.delete('/:id/lead',               requireAdmin, validateObjectId('id'), removeLead);
+
+// Mandatory-disclosure request workflow (admin-only)
+router.patch('/school/:id/disclosure-url',     requireAdmin, validateObjectId('id'), patchDisclosureUrl);
+router.post('/school/:id/disclosure-request',  requireAdmin, validateObjectId('id'), createDisclosureRequest);
+router.post('/disclosure-requests/list',       requireAdmin, listDisclosureRequests);
+router.patch('/disclosure-requests/:id/done',  requireAdmin, validateObjectId('id'), resolveDisclosureRequest);
 
 router.post('/search-collections/list',                     requireAdmin, getSearchCols);
 router.post('/search-collections',                          requireAdmin, createSearchCol);
